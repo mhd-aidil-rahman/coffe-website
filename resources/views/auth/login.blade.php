@@ -7,7 +7,7 @@
                 <img src="{{ asset('uploads/menu/Logo.png') }}" alt="Gotham City Coffee logo">
             </div>
             <h1 class="brand-text">Gotham City Coffee</h1>
-            <div class="brand-sub">, craft, and control.</div>
+            <div class="brand-sub">Coffee, craft, and control.</div>
 
             @if ($errors->any())
                 <div style="padding: 10px 12px; margin-bottom: 12px; border-radius: 8px; background: rgba(212,73,61,0.1); color: #a33a36; font-size: 13px; border: 1px solid rgba(212,73,61,0.2);">
