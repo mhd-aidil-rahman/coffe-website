@@ -15,9 +15,8 @@ class AuthController extends Controller
 
     public function login(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
+        $validated = $this->accounts->credentials($request->only(['email', 'password']));
+        $device = $request->validate([
             'device_name' => ['nullable', 'string', 'max:255'],
         ]);
 
@@ -29,7 +28,7 @@ class AuthController extends Controller
 
         $expiresAt = now()->addDays(30);
         $token = $account->createToken(
-            $validated['device_name'] ?? 'mobile-app',
+            $device['device_name'] ?? 'mobile-app',
             ['*'],
             $expiresAt,
         );

@@ -47,7 +47,7 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::post('/login', function (AccountAuthentication $accounts): mixed {
-    $validated = request()->validate(['email' => ['required', 'email'], 'password' => ['required', 'string']]);
+    $validated = $accounts->credentials(request()->only(['email', 'password']));
     $account = $accounts->authenticate($validated['email'], $validated['password']);
     if ($account === null) {
         return back()->withErrors(['email' => 'Email atau password salah.']);

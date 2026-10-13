@@ -43,7 +43,7 @@
 
             .phone-shell {
                 width: 100%;
-                max-width: 420px;
+                max-width: none;
                 min-height: 100vh;
                 min-height: 100dvh;
                 background: var(--bg-panel);
@@ -118,8 +118,8 @@
 
             .screen {
                 background: var(--bg-panel);
-                min-height: calc(100vh - 48px);
-                min-height: calc(100dvh - 48px - env(safe-area-inset-top, 0px));
+                min-height: 100vh;
+                min-height: 100dvh;
             }
 
             .page {
@@ -1042,7 +1042,7 @@
 
             .fab {
                 position: fixed;
-                right: max(18px, calc((100vw - 420px) / 2 + 18px));
+                right: clamp(18px, 3vw, 48px);
                 bottom: calc(18px + env(safe-area-inset-bottom, 0px));
                 width: 62px;
                 height: 62px;
@@ -1287,7 +1287,7 @@
 
             .bottom-fab {
                 position: fixed;
-                right: max(18px, calc((100vw - 420px) / 2 + 18px));
+                right: clamp(18px, 3vw, 48px);
                 bottom: calc(18px + env(safe-area-inset-bottom, 0px));
                 width: 60px;
                 height: 60px;
@@ -1327,9 +1327,45 @@
                 .waiter-menu-info { font-size: 13px; }
                 .quantity-button { width: 24px; height: 24px; font-size: 18px; }
             }
+            .page {
+                width: 100%;
+                max-width: 1440px;
+                margin-inline: auto;
+            }
+
+            .page > *, .metrics-grid > *, .menu-list > *, .quick-grid > * {
+                min-width: 0;
+            }
+
+            .page input, .page select, .page textarea {
+                max-width: 100%;
+            }
+
+            @media (min-width: 768px) {
+                .page { padding: 32px clamp(24px, 4vw, 56px) 96px; }
+                .metrics-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+                .quick-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+                .menu-list, .waiter-menu-list, .barista-catalog-list {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 18px;
+                }
+                .barista-summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+                .waiter-topbar, .barista-topbar { margin: 0 0 24px; padding: 20px 24px; border-radius: 12px; }
+                .search-box { max-width: 600px; }
+                .waiter-customer-field { max-width: 600px; }
+                .waiter-submit { max-width: 420px; }
+                .sheet { width: min(90vw, 640px); }
+                .sheet.small { width: min(90vw, 460px); }
+                .order-completion-toast { left: auto; right: 24px; margin: 0; width: 388px; }
+            }
+
+            @media (min-width: 1280px) {
+                .waiter-menu-list, .barista-catalog-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            }
         </style>
     </head>
-    <body>
+    <body class="@yield('body-class')">
         @if (session('owner_logged_in'))
             <div
                 id="order-completion-notifications"
@@ -1357,15 +1393,6 @@
         @endif
         <div id="order-completion-toast" class="order-completion-toast" role="status" aria-live="polite" hidden></div>
         <div class="phone-shell">
-            <div class="statusbar">
-                <div class="left">
-                    <span>18:19</span>
-                </div>
-                <div class="right">
-                    <div class="signal"><span></span><span></span><span></span><span></span></div>
-                    <div class="battery"></div>
-                </div>
-            </div>
             <div class="screen">
                 @yield('content')
             </div>

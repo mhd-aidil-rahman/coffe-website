@@ -197,3 +197,16 @@ if (liveSyncTargets.length > 0) {
     setLiveSyncStatus('Sinkron otomatis aktif');
     window.setInterval(refreshLiveData, 5000);
 }
+
+const passwordToggle = document.querySelector('[data-password-toggle]');
+if (passwordToggle) {
+    const passwordInput = document.getElementById(passwordToggle.getAttribute('aria-controls'));
+    if (passwordInput) {
+        passwordToggle.addEventListener('click', () => {
+            const isVisible = passwordInput.type === 'password';
+            passwordInput.type = isVisible ? 'text' : 'password';
+            passwordToggle.setAttribute('aria-pressed', String(isVisible));
+            passwordToggle.setAttribute('aria-label', isVisible ? 'Sembunyikan password' : 'Tampilkan password');
+        });
+    }
+}

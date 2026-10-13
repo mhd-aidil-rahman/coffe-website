@@ -5,9 +5,23 @@ namespace App\Support;
 use App\Models\StaffMember;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AccountAuthentication
 {
+    /**
+     * @param  array{email?: mixed, password?: mixed}  $data
+     * @return array{email: string, password: string}
+     */
+    public function credentials(array $data): array
+    {
+        return Validator::make($data, [
+            'email' => ['required', 'string', 'max:255', Rule::when(($data['email'] ?? null) !== config('owner.email'), 'email')],
+            'password' => ['required', 'string'],
+        ])->validate();
+    }
+
     public function authenticate(string $email, string $password): User|StaffMember|null
     {
         $ownerEmail = (string) config('owner.email');
