@@ -3,6 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="live-sync-url" content="{{ route('live-sync') }}">
+        <meta name="live-sync-revision" content="{{ app(\App\Support\LiveSync::class)->revision() }}">
         <title>{{ $title ?? 'Gotham City Coffee' }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>

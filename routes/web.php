@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LiveSyncController;
 use App\Support\AccountAuthentication;
 use App\Support\BarOperations;
 use App\Support\FinancialReporting;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+
+Route::get('/live-sync', LiveSyncController::class)->name('live-sync');
 
 $canManageMenu = static function (AccountAuthentication $accounts): bool {
     if (session('owner_logged_in')) {

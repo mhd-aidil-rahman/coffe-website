@@ -1,3 +1,5 @@
+import { startLiveSync } from './live-sync';
+
 const notificationRoot = document.querySelector('[data-order-completion-notifications]');
 const notificationToast = document.getElementById('order-completion-toast');
 
@@ -92,111 +94,7 @@ if (notificationRoot && notificationToast) {
     window.setInterval(checkCompletedOrders, 5000);
 }
 
-const liveSyncTargets = Array.from(document.querySelectorAll('[data-live-sync]'));
-
-if (liveSyncTargets.length > 0) {
-    let isRefreshing = false;
-
-    const setLiveSyncStatus = (message) => {
-        document.querySelectorAll('[data-live-sync-status]').forEach((status) => {
-            status.textContent = message;
-        });
-    };
-
-    const refreshLiveData = async () => {
-        if (
-            isRefreshing
-            || document.hidden
-            || document.querySelector('.modal-overlay.show')
-        ) {
-            return;
-        }
-
-        isRefreshing = true;
-
-        try {
-            const refreshUrl = new URL(window.location.href);
-            refreshUrl.searchParams.set('_live_sync', Date.now().toString());
-
-            const response = await fetch(refreshUrl, {
-                headers: { Accept: 'text/html' },
-                cache: 'no-store',
-                credentials: 'same-origin',
-            });
-
-            if (!response.ok) {
-                throw new Error(`Live sync returned HTTP ${response.status}`);
-            }
-
-            if (new URL(response.url).pathname === '/login') {
-                window.location.assign(response.url);
-
-                return;
-            }
-
-            const refreshedDocument = new DOMParser().parseFromString(
-                await response.text(),
-                'text/html',
-            );
-            let updatedTargets = 0;
-
-            liveSyncTargets.forEach((target) => {
-                const refreshedTarget = refreshedDocument.querySelector(
-                    `[data-live-sync="${target.dataset.liveSync}"]`,
-                );
-
-                if (!refreshedTarget) {
-                    return;
-                }
-
-                target.innerHTML = refreshedTarget.innerHTML;
-                updatedTargets += 1;
-
-                if (target.id) {
-                    const searchInput = document.querySelector(
-                        `[data-search-target="${target.id}"]`,
-                    );
-
-                    searchInput?.dispatchEvent(new Event('input', { bubbles: true }));
-                }
-
-                document.dispatchEvent(new CustomEvent('live-sync:updated', {
-                    detail: { key: target.dataset.liveSync },
-                }));
-            });
-
-            if (updatedTargets === 0) {
-                throw new Error('Live sync response did not contain any matching sections');
-            }
-
-            setLiveSyncStatus('Sinkron aktif · data diperbarui');
-        } catch (error) {
-            console.error('Gagal menyinkronkan data terbaru.', error);
-            setLiveSyncStatus('Sinkron tertunda · mencoba lagi');
-        } finally {
-            isRefreshing = false;
-        }
-    };
-
-    document.addEventListener('click', (event) => {
-        const clickTarget = event.target instanceof Element ? event.target : null;
-        const refreshButton = clickTarget?.closest('[data-live-sync-refresh]');
-
-        if (refreshButton) {
-            event.preventDefault();
-            refreshLiveData();
-        }
-    });
-
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-            refreshLiveData();
-        }
-    });
-
-    setLiveSyncStatus('Sinkron otomatis aktif');
-    window.setInterval(refreshLiveData, 5000);
-}
+startLiveSync();
 
 const passwordToggle = document.querySelector('[data-password-toggle]');
 if (passwordToggle) {

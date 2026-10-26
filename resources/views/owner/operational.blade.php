@@ -78,7 +78,7 @@
             <input type="text" placeholder="Cari karyawan" aria-label="Cari karyawan" data-search-target="owner-staff-list">
         </div>
 
-        <div id="owner-staff-list" style="margin-top:16px; display:flex; flex-direction:column; gap:14px;">
+        <div id="owner-staff-list" data-live-sync="owner-operational-staff" style="margin-top:16px; display:flex; flex-direction:column; gap:14px;">
             @forelse ($staffMembers as $staffMember)
                 <div class="status-row" data-search-item style="padding:10px 0;">
                     <div class="status-meta">

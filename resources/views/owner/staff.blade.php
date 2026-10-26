@@ -27,7 +27,7 @@
             <input type="text" placeholder="Cari staff" aria-label="Cari staff" data-search-target="staff-members-list">
         </div>
 
-        <div class="menu-list" id="staff-members-list" style="margin-top:16px;">
+        <div class="menu-list" id="staff-members-list" data-live-sync="owner-staff" style="margin-top:16px;">
             @forelse ($staffMembers as $staffMember)
                 <div class="status-row" data-search-item style="gap:12px; padding:12px 0;">
                     <div class="status-meta" style="min-width:0;">
@@ -104,51 +104,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('[data-modal-target]').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    document.getElementById(button.dataset.modalTarget)?.classList.add('show');
-                });
-            });
-
-            document.querySelectorAll('[data-close-modal]').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    document.getElementById(button.dataset.closeModal)?.classList.remove('show');
-                });
-            });
-
-            document.querySelectorAll('.modal-overlay').forEach(function (modal) {
-                modal.addEventListener('click', function (event) {
-                    if (event.target === modal) {
-                        modal.classList.remove('show');
-                    }
-                });
-            });
-
-            document.querySelectorAll('.staff-more-trigger').forEach(function (button) {
-                button.addEventListener('click', function (event) {
-                    event.stopPropagation();
-                    const menu = document.getElementById('staff-action-' + button.dataset.staffId);
-                    document.querySelectorAll('.menu-action-menu').forEach(function (actionMenu) {
-                        if (actionMenu !== menu) {
-                            actionMenu.style.display = 'none';
-                        }
+            document.addEventListener('click', function (event) {
+                const target = event.target instanceof Element ? event.target : null;
+                if (!target) { return; }
+                const opener = target.closest('[data-modal-target]');
+                if (opener) {
+                    document.getElementById(opener.dataset.modalTarget)?.classList.add('show');
+                    return;
+                }
+                const closer = target.closest('[data-close-modal]');
+                if (closer) {
+                    document.getElementById(closer.dataset.closeModal)?.classList.remove('show');
+                    return;
+                }
+                if (target.classList.contains('modal-overlay')) { target.classList.remove('show'); }
+                const more = target.closest('.staff-more-trigger');
+                if (more) {
+                    const menu = document.getElementById('staff-action-' + more.dataset.staffId);
+                    document.querySelectorAll('.menu-action-menu').forEach(function (other) {
+                        if (other !== menu) { other.style.display = 'none'; }
                     });
                     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                });
-            });
-
-            document.querySelectorAll('[data-edit-staff-id]').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    const id = button.dataset.editStaffId;
-                    document.getElementById('staff-action-' + id).style.display = 'none';
-                    document.getElementById('edit-staff-modal-' + id).classList.add('show');
-                });
-            });
-
-            document.addEventListener('click', function () {
-                document.querySelectorAll('.menu-action-menu').forEach(function (menu) {
-                    menu.style.display = 'none';
-                });
+                    return;
+                }
+                const edit = target.closest('[data-edit-staff-id]');
+                if (edit) { document.getElementById('edit-staff-modal-' + edit.dataset.editStaffId)?.classList.add('show'); }
+                document.querySelectorAll('.menu-action-menu').forEach(function (menu) { menu.style.display = 'none'; });
             });
         });
     </script>

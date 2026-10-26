@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\OwnerReportController;
 use App\Http\Controllers\Api\V1\StaffController;
+use App\Http\Controllers\LiveSyncController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
@@ -17,6 +18,7 @@ Route::prefix('v1')->group(function (): void {
         Route::delete('/auth/logout', [AuthController::class, 'logout']);
 
         Route::middleware('api.role:Owner,Waiter,Barista')->group(function (): void {
+            Route::get('/sync', LiveSyncController::class);
             Route::get('/auth/me', [AuthController::class, 'me']);
             Route::get('/menu-categories', [CategoryController::class, 'index']);
             Route::get('/menu-items', [MenuController::class, 'index']);
