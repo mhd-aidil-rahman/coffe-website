@@ -24,7 +24,7 @@ class StaffManagement
         $validated = Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('staff_members', 'email')->ignore($id)],
-            'position' => ['required', 'string', 'max:100'],
+            'position' => ['required', 'string', Rule::in(['Barista', 'Waiter'])],
             'password' => [$id === null ? 'required' : 'nullable', 'string', 'min:8', 'max:255'],
         ])->validate();
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -221,12 +222,9 @@ class ApiWorkflowTest extends TestCase
             ->assertUnauthorized();
     }
 
-    public function test_web_and_api_owner_login_use_the_same_configured_credentials(): void
+    public function test_web_owner_login_uses_database_credentials(): void
     {
-        config([
-            'owner.email' => 'owner@example.test',
-            'owner.password' => 'a-strong-owner-password',
-        ]);
+        User::factory()->create(['email' => 'owner@example.test', 'password' => 'a-strong-owner-password']);
 
         $this->post('/login', [
             'email' => 'owner@example.test',
@@ -290,7 +288,7 @@ class ApiWorkflowTest extends TestCase
     private function login(string $email, string $password): string
     {
         if ($email === 'owner@gothamcoffee.id') {
-            config(['owner.email' => $email, 'owner.password' => $password]);
+            User::factory()->create(['email' => $email, 'password' => $password]);
         }
 
         $response = $this->postJson('/api/v1/auth/login', [

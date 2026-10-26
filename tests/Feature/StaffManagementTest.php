@@ -47,7 +47,7 @@ class StaffManagementTest extends TestCase
             ->post('/owner/staff/'.$staffId.'/update', [
                 'name' => 'Ayu Putri',
                 'email' => 'ayu.putri@example.test',
-                'position' => 'Supervisor',
+                'position' => 'Waiter',
                 'password' => 'supervisor-pass-456',
             ]);
 
@@ -56,7 +56,7 @@ class StaffManagementTest extends TestCase
             'id' => $staffId,
             'name' => 'Ayu Putri',
             'email' => 'ayu.putri@example.test',
-            'position' => 'Supervisor',
+            'position' => 'Waiter',
         ]);
         $this->assertTrue(Hash::check('supervisor-pass-456', DB::table('staff_members')->where('id', $staffId)->value('password')));
     }

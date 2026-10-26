@@ -23,6 +23,14 @@ $canManageMenu = static function (AccountAuthentication $accounts): bool {
 };
 
 Route::get('/', function () {
+    if (session('barista_logged_in')) {
+        return redirect()->route('barista.operational');
+    }
+
+    if (session('waiter_logged_in')) {
+        return redirect()->route('waiter.orders');
+    }
+
     if (session('owner_logged_in')) {
         return redirect()->route('owner.dashboard');
     }
@@ -64,10 +72,11 @@ Route::post('/login', function (AccountAuthentication $accounts): mixed {
     session([$sessionRole.'_logged_in' => true, $sessionRole.'_id' => $account->id, $sessionRole.'_name' => $account->name]);
 
     return redirect()->route($role === 'Waiter' ? 'waiter.orders' : 'barista.operational');
-})->name('login.post');
+})->middleware('throttle:5,1')->name('login.post');
 
 Route::get('/logout', function () {
-    session()->forget(['owner_logged_in', 'owner_name', 'waiter_logged_in', 'waiter_id', 'waiter_name', 'barista_logged_in', 'barista_id', 'barista_name']);
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
 
     return redirect()->route('login');
 })->name('logout');

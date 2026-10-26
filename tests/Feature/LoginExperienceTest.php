@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,6 +26,8 @@ class LoginExperienceTest extends TestCase
 
     public function test_configured_owner_identifier_without_public_domain_can_log_in_on_web_and_api(): void
     {
+        User::factory()->create(['email' => 'owner@gotham', 'password' => 'Admin453']);
+
         $this->post('/login', ['email' => 'owner@gotham', 'password' => 'Admin453'])
             ->assertRedirect('/owner/dashboard')->assertSessionHas('owner_logged_in', true);
         $this->postJson('/api/v1/auth/login', ['email' => 'owner@gotham', 'password' => 'Admin453'])

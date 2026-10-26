@@ -62,7 +62,10 @@
                             @csrf
                             <input name="name" type="text" value="{{ $staffMember->name }}" placeholder="Nama staff" required>
                             <input name="email" type="email" value="{{ $staffMember->email }}" placeholder="Email" required>
-                            <input name="position" type="text" value="{{ $staffMember->position }}" placeholder="Jabatan" required>
+                            <select name="position" aria-label="Role staff" required>
+                                <option value="Barista" @selected($staffMember->position === 'Barista')>Barista</option>
+                                <option value="Waiter" @selected($staffMember->position === 'Waiter')>Waiters</option>
+                            </select>
                             <input name="password" type="password" placeholder="Password baru (opsional)" autocomplete="new-password">
                             <div class="sheet-actions">
                                 <button type="button" class="action-link" data-close-modal="edit-staff-modal-{{ $staffMember->id }}">Batal</button>
@@ -85,7 +88,10 @@
                     @csrf
                     <input name="name" type="text" placeholder="Nama staff" required>
                     <input name="email" type="email" placeholder="Email" required>
-                    <input name="position" type="text" placeholder="Jabatan" required>
+                    <select name="position" aria-label="Role staff" required>
+                        <option value="Barista">Barista</option>
+                        <option value="Waiter">Waiters</option>
+                    </select>
                     <input name="password" type="password" placeholder="Password akun staff (min. 8 karakter)" autocomplete="new-password" required>
                     <div class="sheet-actions">
                         <button type="button" class="action-link" data-close-modal="staff-modal">Batal</button>

@@ -24,10 +24,9 @@ class AccountAuthentication
 
     public function authenticate(string $email, string $password): User|StaffMember|null
     {
-        $ownerEmail = (string) config('owner.email');
-        $ownerPassword = config('owner.password');
-        if (is_string($ownerPassword) && $ownerPassword !== '' && hash_equals($ownerEmail, $email) && hash_equals($ownerPassword, $password)) {
-            return User::query()->firstOrCreate(['email' => $ownerEmail], ['name' => 'Owner Gotham', 'password' => $password]);
+        $owner = User::query()->where('email', $email)->first();
+        if ($owner && Hash::check($password, $owner->password)) {
+            return $owner;
         }
         $staff = StaffMember::query()->where('email', $email)->where('active', true)->whereIn('position', ['Waiter', 'Barista'])->first();
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -205,7 +206,7 @@ class SharedBackendWorkflowTest extends TestCase
     private function token(string $email): string
     {
         if ($email === 'owner@gothamcoffee.id') {
-            config(['owner.email' => $email, 'owner.password' => 'password123']);
+            User::factory()->create(['email' => $email, 'password' => 'password123']);
         }
         $this->resetApiGuard();
         $response = $this->postJson('/api/v1/auth/login', ['email' => $email, 'password' => 'password123'])->assertCreated();
